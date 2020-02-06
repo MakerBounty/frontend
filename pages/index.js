@@ -1,8 +1,12 @@
-const Index = () => (
-    <div>
-        <h1>OMG server rendering!</h1>
-    </div>
-)
 
+
+
+const Index = () => {
+    return (
+        <div>
+            <h1>homepage</h1>
+        </div>
+    );
+};
 
 export default Index
