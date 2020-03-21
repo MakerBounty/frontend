@@ -7,7 +7,7 @@ const LOCAL_API_URL = "http://localhost:5050";
 const GLOBAL_API_URL = "http://localhost:5050";
 
 export default {
-    isomorphic: async (method, endpoint, ctx) => {
+    isomorphic: async (method : string, endpoint : string, ctx? : any | undefined) => {
         try {
             const options = {
                 method,
@@ -32,7 +32,7 @@ export default {
         }
         
     },
-    swr: async (method, endpoint, authToken) => {
+    swr: async (method : string, endpoint : string, authToken? : any | undefined) => {
         try {
             const options = {
                 method,
@@ -44,7 +44,12 @@ export default {
             if (authToken)
                 options.headers["Authentication"] = `Bearer ${authToken}`;
 
-            const res = await ufetch(API_URL + endpoint);
+            const res = await ufetch(GLOBAL_API_URL + endpoint);
+            return {
+                status : res.status,
+                text : await res.text(),
+            };
+            
         } catch (e) {
             console.error(e);
             return e;
