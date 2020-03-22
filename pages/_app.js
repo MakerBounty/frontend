@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }) {
             <Header userInfo={{}} style={{padding: "0 !important" , margin: "0 !important"}}></Header>
             <Component {...pageProps} />
         </ScreenClassProvider>
-        
     </div>);
 }
 
@@ -30,4 +29,4 @@ function MyApp({ Component, pageProps }) {
 //   return { ...appProps }
 // }
 
-export default MyApp
+export default MyApp;
