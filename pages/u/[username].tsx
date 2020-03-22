@@ -4,6 +4,7 @@ import api from "../../lib/api";
 import { request } from 'http';
 import ReactMarkdown from "react-markdown";
 import ErrorPage from "next/error";
+import cookies from 'next-cookies';
 
 const userPage = ({ user }) => {
 
@@ -40,7 +41,7 @@ userPage.getInitialProps = async ctx => {
     try {
         const { req, res } = ctx;
         const username = ctx.query.username;
-        const user = await api.isomorphic("GET", `/api/user/describe/${username}`, ctx);
+        const user = await api.isomorphic("GET", `/api/user/describe/${username}`, cookies(ctx).authToken);
         return { user };
     } catch (e) {
         console.log(e);
