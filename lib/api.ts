@@ -12,6 +12,9 @@ const LOCAL_API_URL = "http://localhost:5050";
 const GLOBAL_API_URL = "http://localhost:5050";
 
 export default {
+
+    // server side api request*
+    // * called in getInitialProps() so can also be run on client side so we have to check
     server: async function (method : string, endpoint : string, ctx : any, body?: any | undefined, redirect?: string | undefined) {
         const { authToken } = cookies(ctx);
         const needLogin = (ret? : any) => {
@@ -31,8 +34,9 @@ export default {
             return needLogin(ret);
         
         return ret;
-        
     },
+
+    // client-side api-request
     client: async function (method : string, endpoint : string, body?: any | undefined, redirect?: string | undefined) {
         const authToken = Cookies.get("authToken");
         if (!authToken && redirect) {
@@ -44,8 +48,6 @@ export default {
             window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
         return ret;
     },
-
-
 
     // server-side
     isomorphic: async (method : string, endpoint : string, authToken: string | undefined, body?: any | undefined) => {
@@ -76,18 +78,21 @@ export default {
     
     // client-side
     swr: async (method : string, endpoint : string, authToken : any | undefined, body?: any | undefined) => {
+        alert(method);
         try {
             const options = {
                 method,
                 "headers": {
                     "content-type" : "application/json",
-                }
+                    'Access-Control-Allow-Origin':'*'
+                },
+                body: JSON.stringify(body)               
             };
             
             if (authToken)
                 options.headers["Authentication"] = `Bearer ${authToken}`;
 
-            const res = await ufetch(GLOBAL_API_URL + endpoint);
+            const res = await ufetch(GLOBAL_API_URL + endpoint, options);
             return {
                 status : res.status,
                 text : await res.text(),

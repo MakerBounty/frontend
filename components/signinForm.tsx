@@ -11,10 +11,12 @@ export default class SigninForm extends React.Component {
         super(props);
         this.state = { feedback: "", username: "", password: "", };
         this.redirect = props.redirect || undefined;        
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
     async handleSubmit(event){
+        console.log(this);
         event.preventDefault();
         if (!this.state.username || !this.state.password)
             return;
@@ -31,7 +33,7 @@ export default class SigninForm extends React.Component {
         }
 
         // success
-        document.cookie = `authToken=${login.text}; max-age=604800;path=/`;
+        document.cookie = `authToken=${login.text};max-age=604800;path=/`;
         window.location = this.state.redirect || '/';
     }
 
@@ -41,7 +43,7 @@ export default class SigninForm extends React.Component {
             <div>
               <input type="text" onChange={(event) => this.setState({username : event.target.value })}/>
               <input type="password" onChange={(event) => this.setState({password : event.target.value })} />
-              <button type="button" onClick={this.handleSubmit}>Submit</button>
+              <button type="submit" onClick={this.handleSubmit}>Submit</button>
               <span style={{color:"red"}}>{this.state.feedback}</span>
             </div>
         );
