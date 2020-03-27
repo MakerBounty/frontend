@@ -1,20 +1,22 @@
 // import App from 'next/app'
-
-import { ScreenClassProvider } from 'react-grid-system';
-
-
 import Header from "../components/header";
+import { Component } from "react";
 
+import api from "../lib/api";
 
 function MyApp({ Component, pageProps }) {
-    return (<div style={{
-         width:"100%", border: "1px solid red",
-         padding: "0 !important", margin: "0 !important" }}>
-        <ScreenClassProvider>
-            <Header userInfo={{}} style={{padding: "0 !important" , margin: "0 !important"}}></Header>
-            <Component {...pageProps} />
-        </ScreenClassProvider>
-    </div>);
+    return (<>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
+        <style jsx global>{`
+            body {
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+                margin: 0px;
+                padding: 0px;
+            }
+        `}</style>
+        <Header />
+        <Component {...pageProps} />
+    </>);
 }
 
 // Only uncomment this method if you have blocking data requirements for

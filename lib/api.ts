@@ -3,6 +3,7 @@ import ufetch from "unfetch";
 import ifetch from "isomorphic-unfetch";
 import Cookies from "js-cookie";
 import Router from "next/router";
+import logout from "./logout";
 
 // TODO: move these to globals.ts as this varies by NODE_ENV
 
@@ -28,11 +29,9 @@ export default {
 
         if (!authToken && redirect)
             return needLogin();
-        
         const ret = await this.isomorphic(method, endpoint, authToken, body);
         if (ret.status == 401 && redirect)
             return needLogin(ret);
-        
         return ret;
     },
 
@@ -40,6 +39,7 @@ export default {
     client: async function (method : string, endpoint : string, body?: any | undefined, redirect?: string | undefined) {
         const authToken = Cookies.get("authToken");
         if (!authToken && redirect) {
+            logout();
             window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
             return { status: 401, text: "\"please login\"" }
         }
@@ -57,10 +57,10 @@ export default {
                 "headers" : {
                     "content-type" : "application/json",
                 },
-                body: JSON.stringify(body)
+                body: body ? JSON.stringify(body) : undefined
             };
             if (authToken)
-                options.headers["Authentication"] = `Bearer ${authToken}`;
+                options.headers["Authorization"] = `Bearer ${authToken}`;
             
             const res = await ifetch(LOCAL_API_URL + endpoint);
             const text = await res.text();
@@ -78,21 +78,20 @@ export default {
     
     // client-side
     swr: async (method : string, endpoint : string, authToken : any | undefined, body?: any | undefined) => {
-        alert(method);
         try {
             const options = {
                 method,
                 "headers": {
                     "content-type" : "application/json",
-                    'Access-Control-Allow-Origin':'*'
+                    // 'Access-Control-Allow-Origin':'*'
                 },
                 body: JSON.stringify(body)               
             };
             
             if (authToken)
-                options.headers["Authentication"] = `Bearer ${authToken}`;
+                options.headers["Authorization"] = `Bearer ${authToken}`;
 
-            const res = await ufetch(GLOBAL_API_URL + endpoint, options);
+            const res = await fetch(GLOBAL_API_URL + endpoint, options);
             return {
                 status : res.status,
                 text : await res.text(),

@@ -14,9 +14,13 @@ export default class SigninForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    async cacheUserData() {
+        const ud = await api.client("GET", "/api/user/self");
+        console.log(ud);
+        window.localStorage.setItem("userData", ud.text);
+    }
 
     async handleSubmit(event){
-        console.log(this);
         event.preventDefault();
         if (!this.state.username || !this.state.password)
             return;
@@ -33,20 +37,50 @@ export default class SigninForm extends React.Component {
         }
 
         // success
+        // save cookie
         document.cookie = `authToken=${login.text};max-age=604800;path=/`;
+        await this.cacheUserData();
         window.location = this.state.redirect || '/';
     }
 
 
     render(){
-        return (
-            <div>
-              <input type="text" onChange={(event) => this.setState({username : event.target.value })}/>
-              <input type="password" onChange={(event) => this.setState({password : event.target.value })} />
-              <button type="submit" onClick={this.handleSubmit}>Submit</button>
-              <span style={{color:"red"}}>{this.state.feedback}</span>
-            </div>
-        );
+        return (<>
+            <style jsx>{`
+                input {
+                    margin: 10px;
+                    margin-left: 0;
+                    padding: 5px;
+                    border-radius: 4px;
+                    border: 1px solid grey;
+                }
+                input:focus {
+                    border: 1px solid #4c6fb9;
+                }
+            `}</style>
+
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    Username/Email<br/>
+                    <input type="text" value={this.state.username}
+                        onChange={(event) => this.setState({username : event.target.value })}
+                        ref={i => i.focus()}
+                        />
+                </label>
+                <br/>
+                <label>
+                    Password<br/>
+                    <input type="password" value={this.state.password} 
+                        onChange={(event) => this.setState({password : event.target.value })} 
+                        />
+                </label>
+
+                <br/>
+                
+                <input type="submit" />
+                <span style={{color:"red"}}>{this.state.feedback}</span>
+            </form>
+        </>);
     }
 };
 
