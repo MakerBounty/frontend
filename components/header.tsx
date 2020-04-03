@@ -21,8 +21,12 @@ export default function Header( ) {
                 color: #fff;
                 margin: 0;
                 padding: 4px;
-                padding-left: 10px;
-                height: 32px;
+                padding-left: 0;
+                padding-right: 0;
+                min-height: 32px;
+            }
+            div.nb-cont {
+                margin-left: 10px;
             }
 
             /* change logo based on screen size */
@@ -63,8 +67,8 @@ export default function Header( ) {
 
         `}</style>
 
-        <div className="navbar desktop-only">
-
+        <div className="navbar">
+            <div className="nb-cont">
             <Container fluid>
                 <Row className="nbrow" justify="start">
                         
@@ -97,6 +101,7 @@ export default function Header( ) {
                         )}
                 </Row>
             </Container>
+            </div>  
         </div>
         {/*
         <div className="navBar">

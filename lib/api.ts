@@ -5,6 +5,10 @@ import Cookies from "js-cookie";
 import Router from "next/router";
 import logout from "./logout";
 
+
+// REFACTOR: this is more complicated than it needs to be and could cause problems in some cases...
+//   probably should just use a single isomorphic request
+
 // TODO: move these to globals.ts as this varies by NODE_ENV
 
 // relative to server
@@ -47,6 +51,7 @@ export default {
         if (ret.status == 401 && redirect)
             window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
         return ret;
+
     },
 
     // server-side

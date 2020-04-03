@@ -6,18 +6,13 @@ export default class SigninForm extends React.Component {
     // after login where to send them back to
     redirect : any | undefined;
     state : any;
+    _unInput : any;
 
     constructor(props) {
         super(props);
         this.state = { feedback: "", username: "", password: "", };
         this.redirect = props.redirect || undefined;        
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    async cacheUserData() {
-        const ud = await api.client("GET", "/api/user/self");
-        console.log(ud);
-        window.localStorage.setItem("userData", ud.text);
     }
 
     async handleSubmit(event){
@@ -37,10 +32,17 @@ export default class SigninForm extends React.Component {
         }
 
         // success
-        // save cookie
+        // save authtoken into cookie
         document.cookie = `authToken=${login.text};max-age=604800;path=/`;
-        await this.cacheUserData();
+        // save user metadata
+        const ud = await api.client("GET", "/api/user/self");
+        console.log(ud);
+        window.localStorage.setItem("userData", ud.text);
         window.location = this.state.redirect || '/';
+    }
+
+    componentDidMount(){
+        this._unInput.focus();
     }
 
 
@@ -64,7 +66,7 @@ export default class SigninForm extends React.Component {
                     Username/Email<br/>
                     <input type="text" value={this.state.username}
                         onChange={(event) => this.setState({username : event.target.value })}
-                        ref={i => i.focus()}
+                        ref={i => this._unInput = i}
                         />
                 </label>
                 <br/>

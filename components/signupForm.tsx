@@ -36,9 +36,9 @@ export default class SigninForm extends React.Component {
         }
 
         const login = await api.swr("POST", "/api/user/create", undefined, {
-            login: this.state.username,
-            password: this.state.password,
-            
+            username:   this.state.username,
+            password:   this.state.password,
+            email:      this.state.email,            
         });
         
         // login failed...

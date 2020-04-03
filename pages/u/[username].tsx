@@ -2,6 +2,7 @@
 import api from "../../lib/api";
 import ReactMarkdown from "react-markdown";
 import ErrorPage from "next/error";
+import logout from "../../lib/logout";
 
 /// TODO: check if user is the logged in user and show edit button if so
 
@@ -19,9 +20,17 @@ const userPage = (props) => {
     if (user.status != 200)
         return (<ErrorPage statusCode={user.status} title={user.text} />);
 
-    const { username, bio, createdTs } = JSON.parse(user.text);
+    const { username, bio, createdTs, userId } = JSON.parse(user.text);
     const createdDate = new Date(createdTs);
 
+    // is the user looking at their own profile?
+    let activeUser = false;
+    if (typeof window !== "undefined") {
+        try {
+            activeUser = JSON.parse(localStorage.getItem("userData")).userId == userId;
+        } catch (e) { }
+    }
+    
     return (<>
         <style jsx>{`
             div.user-page {
@@ -32,19 +41,32 @@ const userPage = (props) => {
                 border: 1px solid grey;
                 padding: 10px;
             }
-            h3.join-date {
+            .join-date {
                 color:"grey";
                 margin-left: "10px";
+                
+            }
+            button {
+                padding: 10px;
+                border-radius: 5px;
+                
             }
         `}</style>
         <div className="user-page">
             <h1>{username}</h1>
-            <h3 className="join-date" >{`Joined ${createdDate}`}</h3>
+            <h4 className="join-date" >{`Joined ${createdDate}`}</h4>
+            {activeUser && (
+                <>
+                    <button type="button" onClick={() => { logout(); window.location = window.location }}>Log Out</button>
+                    <button type="button" onClick={() => alert("coming soon")}>Edit Profile</button>
+                    <br/>
+                </>
+            )}
             {bio && (<div className="biobox">
                 <h4>Bio</h4><hr/>
-                <ReactMarkdown source={bio}/>
+                <ReactMarkdown source={bio} />
             </div>)}
-            <pre>{JSON.stringify(user)}</pre>
+            
         </div>
     </>);
 };
